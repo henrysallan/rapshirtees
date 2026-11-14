@@ -39,6 +39,12 @@ export async function POST(request: Request) {
     if (session.payment_status !== "paid") {
       return Response.json({ received: true, skipped: "not paid yet" });
     }
+    // Anyone can "pay" a test-mode checkout with Stripe's public test cards,
+    // and Printify has no sandbox — so test payments don't order by default.
+    if (!event.livemode && process.env.PRINTIFY_ORDER_TEST_PAYMENTS !== "true") {
+      console.log(`Test-mode payment ${session.id}: not ordering from Printify`);
+      return Response.json({ received: true, skipped: "test mode" });
+    }
 
     try {
       await fulfill(session.id);
