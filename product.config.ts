@@ -15,9 +15,9 @@ export const product = {
   price: 3500,
   currency: "usd",
 
-  // Flat shipping charged in Stripe Checkout. Printify bills you separately:
+  // Shipping charged in Stripe Checkout (0 = free). Printify still bills you:
   // US standard is $5.35 for one shirt, +$2.40 for each extra shirt.
-  shipping: { amount: 500, label: "Standard shipping" },
+  shipping: { amount: 0, label: "Free shipping" },
 
   // Countries Stripe Checkout will accept a shipping address from.
   // Make sure your Printify print provider ships to all of them.

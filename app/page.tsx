@@ -25,6 +25,7 @@ export default function Home() {
           <h1 className="text-2xl font-medium tracking-tight">{product.name}</h1>
           <p className="mt-2 text-neutral-600">
             {formatPrice(product.price, product.currency)}
+            {product.shipping.amount === 0 && " · Free shipping"}
           </p>
         </div>
 
