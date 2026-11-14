@@ -10,8 +10,8 @@ export async function POST(request: Request) {
   const origin = new URL(request.url).origin;
   const isLocal = /localhost|127\.0\.0\.1/.test(origin);
 
-  const form = await request.formData();
-  const size = product.sizes.find((s) => s.label === form.get("size"));
+  const form = await request.formData().catch(() => null);
+  const size = product.sizes.find((s) => s.label === form?.get("size"));
   if (!size) {
     return Response.redirect(`${origin}/`, 303);
   }
