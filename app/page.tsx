@@ -37,7 +37,7 @@ export default function Home() {
               {product.sizes.map((size) => (
                 <label
                   key={size.label}
-                  className="flex h-8 min-w-10 cursor-pointer items-center justify-center border-[0.5px] border-black px-2 text-xs transition-colors select-none hover:bg-neutral-100 has-checked:bg-black has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-black"
+                  className="flex h-8 min-w-10 cursor-pointer items-center justify-center border-[0.5px] border-black px-2 text-xs opacity-50 transition select-none hover:bg-neutral-100 hover:opacity-100 has-checked:bg-black has-checked:text-white has-checked:opacity-100 has-focus-visible:opacity-100 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-black"
                 >
                   <input
                     type="radio"
