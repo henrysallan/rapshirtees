@@ -52,21 +52,21 @@ Paste `printifyProductId` and `sizes` into `product.config.ts`. While you're the
 
 ### 4. Test locally (Stripe test mode)
 
-Install the Stripe CLI and forward webhooks to your machine:
+Install the [Stripe CLI](https://docs.stripe.com/stripe-cli):
 
 ```bash
 brew install stripe/stripe-cli/stripe
 ```
 
-```bash
-stripe login
-```
+If Homebrew complains about Command Line Tools, download the `mac-os` binary from the [stripe-cli releases](https://github.com/stripe/stripe-cli/releases) instead.
+
+Then forward Stripe's events to your machine. This uses the `STRIPE_SECRET_KEY` from `.env.local`, so it always listens to the same test environment the site uses. No `stripe login` is needed:
 
 ```bash
-stripe listen --forward-to localhost:3000/api/webhooks/stripe
+npm run stripe:listen
 ```
 
-Copy the `whsec_…` it prints into `STRIPE_WEBHOOK_SECRET`, then in another terminal:
+Copy the `whsec_…` it prints into `STRIPE_WEBHOOK_SECRET` (it stays the same between runs), then in another terminal:
 
 ```bash
 npm run dev

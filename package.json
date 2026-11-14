@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "printify": "node --env-file-if-exists=.env.local scripts/printify.mjs"
+    "printify": "node --env-file-if-exists=.env.local scripts/printify.mjs",
+    "stripe:listen": "set -a && . ./.env.local && set +a && STRIPE_API_KEY=$STRIPE_SECRET_KEY stripe listen --events checkout.session.completed,checkout.session.async_payment_succeeded --forward-to localhost:3000/api/webhooks/stripe"
   },
   "dependencies": {
     "next": "16.4.6",
