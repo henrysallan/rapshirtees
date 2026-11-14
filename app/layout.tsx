@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "rapshirtees",
@@ -14,8 +9,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full bg-white text-black">{children}</body>
+    <html lang="en" className="antialiased">
+      <body className="flex min-h-dvh flex-col bg-white text-black">
+        <header className="pt-5 pb-2 text-center text-xs tracking-[0.2em]">
+          <Link href="/">RAPSHIRTEES.COM</Link>
+        </header>
+        {children}
+      </body>
     </html>
   );
 }
