@@ -22,7 +22,7 @@ export default function Home() {
         className="flex w-full max-w-sm flex-col gap-5 justify-self-center md:justify-self-start"
       >
         <div>
-          <h1 className="text-2xl tracking-tight">{product.name}</h1>
+          <h1 className="text-2xl">{product.name}</h1>
           <p className="mt-2 text-neutral-600">
             {formatPrice(product.price, product.currency)}
             {product.shipping.amount === 0 && " · Free shipping"}
@@ -35,7 +35,7 @@ export default function Home() {
             {product.sizes.map((size) => (
               <label
                 key={size.label}
-                className="flex h-11 min-w-14 cursor-pointer items-center justify-center border border-black px-3 text-sm transition-colors select-none hover:bg-neutral-100 has-checked:bg-black has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-black"
+                className="flex h-8 min-w-10 cursor-pointer items-center justify-center border border-black px-2 text-xs transition-colors select-none hover:bg-neutral-100 has-checked:bg-black has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-black"
               >
                 <input
                   type="radio"
@@ -52,7 +52,7 @@ export default function Home() {
 
         <button
           type="submit"
-          className={`${focusRing} h-12 w-full cursor-pointer bg-green-700 text-sm text-white transition-colors hover:bg-green-800 active:bg-green-900`}
+          className={`${focusRing} h-9 w-full cursor-pointer bg-green-700 text-sm text-white transition-colors hover:bg-green-800 active:bg-green-900`}
         >
           Buy
         </button>
