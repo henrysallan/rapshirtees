@@ -3,7 +3,7 @@
 A one-product T-shirt store. Customers pay with Stripe Checkout, and a Stripe webhook turns each paid order into a Printify order.
 
 ```
-Buy button ──POST──▶ /api/checkout ──303──▶ Stripe Checkout (size, quantity, address, card)
+Size + Buy ──POST──▶ /api/checkout ──303──▶ Stripe Checkout (quantity, address, card)
                                                       │
                                checkout.session.completed (signed webhook)
                                                       ▼
@@ -17,9 +17,9 @@ Buy button ──POST──▶ /api/checkout ──303──▶ Stripe Checkout 
 | File | What it does |
 | --- | --- |
 | `product.config.ts` | Name, price, shipping, countries, sizes → Printify variant IDs |
-| `public/shirt.png` | Product image (placeholder — replace it) |
-| `app/page.tsx` | The page: centred image, Buy button bottom-left |
-| `app/api/checkout/route.ts` | Creates the Stripe Checkout Session |
+| `public/rari-01.jpg` | Product image (imported in `product.config.ts`) |
+| `app/page.tsx` | The page: image left; title, price, size buttons and Buy right |
+| `app/api/checkout/route.ts` | Creates the Stripe Checkout Session, storing the Printify product/variant for the chosen size in its metadata |
 | `app/api/webhooks/stripe/route.ts` | Verifies Stripe's signature, creates the Printify order |
 | `lib/printify.ts` | Small Printify API client |
 | `scripts/printify.mjs` | Prints your Printify shop, product and variant IDs |
@@ -89,7 +89,7 @@ Test mode and live mode have separate keys **and** separate webhook endpoints an
 
 ### 6. Go-live checklist
 
-- [ ] `public/shirt.png` replaced and `product.config.ts` filled in (no `printifyVariantId: 0` left)
+- [ ] `product.config.ts` filled in (no `printifyVariantId: 0` left)
 - [ ] Live `STRIPE_SECRET_KEY` and the live endpoint's `STRIPE_WEBHOOK_SECRET` set in production
 - [ ] Stripe → Settings → Customer emails → "Successful payments" turned on, so buyers get a receipt
 - [ ] `shippingCountries` only lists countries your Printify print provider ships to

@@ -1,31 +1,61 @@
 import Image from "next/image";
 import { formatPrice, product } from "@/product.config";
 
+const outline =
+  "rounded-lg border border-black transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black";
+
 export default function Home() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-white p-4">
-      <div className="relative">
-        <Image
-          src={product.image}
-          alt={product.name}
-          preload
-          placeholder="blur"
-          sizes="(max-width: 768px) 92vw, 720px"
-          className="block h-auto max-h-[85dvh] w-auto max-w-[min(92vw,720px)]"
-        />
-        <form
-          action="/api/checkout"
-          method="POST"
-          className="absolute bottom-4 left-4"
+    <main className="mx-auto grid min-h-dvh max-w-6xl items-center gap-8 px-4 py-10 md:grid-cols-2 md:gap-16 md:px-10">
+      <Image
+        src={product.image}
+        alt={product.name}
+        preload
+        placeholder="blur"
+        sizes="(max-width: 768px) 92vw, 560px"
+        className="mx-auto h-auto w-full max-w-[560px]"
+      />
+
+      <form
+        action="/api/checkout"
+        method="POST"
+        className="flex w-full max-w-sm flex-col gap-8 justify-self-center md:justify-self-start"
+      >
+        <div>
+          <h1 className="text-2xl font-medium tracking-tight">{product.name}</h1>
+          <p className="mt-2 text-neutral-600">
+            {formatPrice(product.price, product.currency)}
+          </p>
+        </div>
+
+        <fieldset>
+          <legend className="mb-3 text-sm text-neutral-600">Size</legend>
+          <div className="flex gap-2">
+            {product.sizes.map((size) => (
+              <label
+                key={size.label}
+                className={`${outline} flex h-11 min-w-14 cursor-pointer items-center justify-center px-3 text-sm select-none hover:bg-neutral-100 has-checked:bg-black has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-black`}
+              >
+                <input
+                  type="radio"
+                  name="size"
+                  value={size.label}
+                  required
+                  className="sr-only"
+                />
+                {size.label}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <button
+          type="submit"
+          className={`${outline} h-12 w-full cursor-pointer text-sm font-medium hover:bg-black hover:text-white`}
         >
-          <button
-            type="submit"
-            className="cursor-pointer bg-black px-6 py-3 text-sm font-medium tracking-wide text-white uppercase transition-opacity hover:opacity-80 active:opacity-60"
-          >
-            Buy — {formatPrice(product.price, product.currency)}
-          </button>
-        </form>
-      </div>
+          Buy
+        </button>
+      </form>
     </main>
   );
 }

@@ -1,14 +1,27 @@
 import { getStripe } from "@/lib/stripe";
-import { product, sizeValue } from "@/product.config";
+import { product } from "@/product.config";
 
 /**
- * The Buy button posts here. We create a Stripe Checkout Session and
- * redirect the browser to Stripe's hosted payment page. Size and shipping
- * address are collected on that page.
+ * The Buy button posts here with the chosen size. We create a Stripe Checkout
+ * Session and redirect the browser to Stripe's hosted payment page, which
+ * collects quantity, shipping address and payment.
  */
 export async function POST(request: Request) {
   const origin = new URL(request.url).origin;
   const isLocal = /localhost|127\.0\.0\.1/.test(origin);
+
+  const form = await request.formData();
+  const size = product.sizes.find((s) => s.label === form.get("size"));
+  if (!size) {
+    return Response.redirect(`${origin}/`, 303);
+  }
+
+  // Read by the Stripe webhook to place the matching Printify order.
+  const metadata = {
+    size: size.label,
+    printify_product_id: product.printifyProductId,
+    printify_variant_id: String(size.printifyVariantId),
+  };
 
   const session = await getStripe().checkout.sessions.create({
     mode: "payment",
@@ -24,26 +37,15 @@ export async function POST(request: Request) {
           currency: product.currency,
           unit_amount: product.price,
           product_data: {
-            name: product.name,
+            name: `${product.name} — ${size.label}`,
             // Stripe fetches this image itself, so it must be a public URL.
             images: isLocal ? undefined : [`${origin}${product.image.src}`],
           },
         },
       },
     ],
-    custom_fields: [
-      {
-        key: "size",
-        label: { type: "custom", custom: "Size" },
-        type: "dropdown",
-        dropdown: {
-          options: product.sizes.map((s) => ({
-            label: s.label,
-            value: sizeValue(s.label),
-          })),
-        },
-      },
-    ],
+    metadata,
+    payment_intent_data: { metadata },
     shipping_address_collection: {
       allowed_countries: [...product.shippingCountries],
     },

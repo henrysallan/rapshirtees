@@ -1,7 +1,6 @@
 import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { createOrder, sendToProduction } from "@/lib/printify";
-import { product, sizeValue } from "@/product.config";
 
 /**
  * Stripe calls this after a customer pays. We turn the paid Checkout Session
@@ -57,10 +56,11 @@ async function fulfill(sessionId: string) {
     expand: ["line_items"],
   });
 
-  const chosen = session.custom_fields.find((f) => f.key === "size")?.dropdown?.value;
-  const size = product.sizes.find((s) => sizeValue(s.label) === chosen);
-  if (!size || !size.printifyVariantId) {
-    throw new Error(`No Printify variant configured for size "${chosen}"`);
+  // Set by /api/checkout from the size the customer picked on the page.
+  const productId = session.metadata?.printify_product_id;
+  const variantId = Number(session.metadata?.printify_variant_id);
+  if (!productId || !variantId) {
+    throw new Error(`Session ${session.id} has no Printify product/variant in its metadata`);
   }
 
   const quantity = session.line_items?.data[0]?.quantity ?? 1;
@@ -76,13 +76,7 @@ async function fulfill(sessionId: string) {
   const order = await createOrder({
     external_id: session.id,
     label: `Stripe ${session.id.slice(-8)}`,
-    line_items: [
-      {
-        product_id: product.printifyProductId,
-        variant_id: size.printifyVariantId,
-        quantity,
-      },
-    ],
+    line_items: [{ product_id: productId, variant_id: variantId, quantity }],
     shipping_method: Number(process.env.PRINTIFY_SHIPPING_METHOD ?? 1),
     send_shipping_notification: false,
     address_to: {
